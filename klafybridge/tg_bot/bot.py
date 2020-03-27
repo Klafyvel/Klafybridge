@@ -54,8 +54,6 @@ class Bot:
         self.config = toml.load(filename)
         self.logger = logging.getLogger(self.config["telebot"]["logger"])
         self.logger.info("Loading telegram configuration from %s.", filename)
-        self.min_time = self.config["telebot"]["min_time"]
-        self.channel = self.config["telebot"]["channel"]
 
         self.url = self.config["http"]["url"]
 
