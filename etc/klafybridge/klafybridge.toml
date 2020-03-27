@@ -1,0 +1,15 @@
+[files]
+storage = "/var/www/klafybridge"
+[telebot]
+token = "TGBOTTOKEN" # fetched in environment
+logger = "tg" # defined in logging.toml
+[http]
+url="https://example.org/"
+[irc]
+nickname = "bridge"
+server = "irc.example.org"
+port = 6667
+logger = "irc" # defined in logging.toml
+[channels]
+# "#irc_channel" = telegramchanid
+"#test" = -66666
