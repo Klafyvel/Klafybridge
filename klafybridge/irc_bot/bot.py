@@ -56,7 +56,7 @@ class User(irc.bot.SingleServerIRCBot):
                 self.action(c, e)
             else:
                 self.privmsg(c, e)
-        for c in reversed(done):
+        for x in reversed(done):
             self.logger.debug("%s: Removing %r", self.nickname, c)
             self.waiting.pop(x)
         self.reactor.process_once()
