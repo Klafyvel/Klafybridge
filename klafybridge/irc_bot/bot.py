@@ -15,12 +15,13 @@ from ..messages import Message
 
 
 class User(irc.bot.SingleServerIRCBot):
-    def __init__(self, nickname, server, logger, port=6667):
+    def __init__(self, nickname, server, logger, port=6667, max_msg_length=300):
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
         self.waiting = []
         self.waiting = []
         self.nickname = nickname
         self.logger = logger
+        self.max_msg_length = max_msg_length
 
     def on_nicknameinuse(self, c, e):
         self.nickname = c.get_nickname() + "_"
@@ -30,7 +31,12 @@ class User(irc.bot.SingleServerIRCBot):
         self.logger.debug("%s : channels looks like %s", self.nickname, self.channels)
         if c in self.channels:
             for line in e.split("\n"):
-                self.connection.privmsg(c, line)
+                self.logger.debug("Preparing line %r.", line)
+                for i in range(0, len(line), self.max_msg_length):
+                    chunk_size = min(len(line)-i, self.max_msg_length)
+                    chunk = line[i:i+chunk_size]
+                    self.logger.debug("Sending chunk %r.", chunk)
+                    self.connection.privmsg(c, chunk)
         else:
             self.waiting.append(("p", c, e))
             self.connection.join(c)
@@ -44,9 +50,10 @@ class User(irc.bot.SingleServerIRCBot):
 
     def process_once(self):
         done = []
-        self.logger.debug(
-            "%s: Processing once, waiting is %r", self.nickname, self.waiting
-        )
+        if self.waiting:
+            self.logger.debug(
+                "%s: Processing once, waiting is %r", self.nickname, self.waiting
+            )
         for x, (t, c, e) in enumerate(self.waiting):
             if c not in self.channels:
                 self.connection.join(c)
