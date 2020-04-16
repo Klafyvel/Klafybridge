@@ -1,5 +1,6 @@
 import pathlib
 import multiprocessing as mp
+import time
 
 import logging
 import logging.config
@@ -28,3 +29,15 @@ def main(config_dir):
     logging.info("Starting irc bot.")
     irc_bot.start()
     logging.info("Done.")
+
+    while True:
+        if not tg_bot.is_alive():
+            logging.error("Tg bot died. Launching it again.")
+            tg_bot = mp.Process(target=tg_bot_main, args=(config_dir, tg_conn,))
+            tg_bot.start()
+        if not irc_bot.is_alive():
+            logging.error("IRC bot died. Launching it again.")
+            irc_bot = mp.Process(target=irc_bot_main, args=(config_dir, irc_conn,))
+            irc_bot.start()
+
+        time.sleep(1)
