@@ -1,0 +1,13 @@
+[Unit]
+Description=Klafyvel's IRC-Telegram bridge.
+After=network.target
+
+[Service]
+User=klafyvel
+Restart=always
+Type=simple
+WorkingDirectory=/usr/local/klafybridge
+ExecStart=/usr/local/bin/pipenv run python -m /usr/local/klafybridge/klafybridge --config_dir /usr/local/klafybridge/conf
+
+[Install]
+WantedBy=multi-user.target
