@@ -10,6 +10,3 @@ python-telegram-bot = "*"
 toml = "*"
 irc = "*"
 click = "*"
-
-[requires]
-python_version = "3.6"
